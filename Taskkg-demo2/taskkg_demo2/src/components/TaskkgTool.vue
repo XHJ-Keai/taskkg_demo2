@@ -32,18 +32,18 @@
       </a>
       <div style="font-size:16px;margin-top: 14px;text-align: center;">
         <p>Tell me what are you trying to do, in the following format:</p>
-        <p style="margin-top: -8px">{{'I want to '}}<span style="background: pink">{{'&lt&ltaction>>'}}</span><span style="margin-left:5px;background: navajowhite">{{' <&ltobject>>' }}</span><span style="margin-left:5px;background:skyblue">{{'<&ltconstraint/context>>.'}} </span></p>
-        <p style="margin-top: 26px"><b>Example:</b>{{'I want to '}}<span style="background: pink">{{'convert'}}</span>{{' an'}}<span style="margin-left:5px;background: navajowhite">{{' integer' }}</span>{{' to'}}<span style="margin-left:5px;background:skyblue">{{'string'}} </span><span style="margin-left:5px;background:skyblue">{{'in Java'}} </span></p>
+        <p style="margin-top: -8px">{{'I want to '}}<span style="background: pink"><i>{{'&lt&ltaction>>'}}</i></span><span style="margin-left:5px;background: navajowhite"><i>{{' <&ltobject>>' }}</i></span><span style="margin-left:5px;background:skyblue"><i>{{'<&ltconstraint/context>>.'}}</i></span></p>
+        <p style="margin-top: 26px"><b>Example:</b>{{'I want to '}}<span style="background: pink">{{'convert'}}</span>{{' an'}}<span style="margin-left:5px;background: navajowhite">{{' integer' }}</span>{{' to'}}<span style="margin-left:5px;background:skyblue">{{'string'}} </span><span style="margin-left:5px;background:skyblue">{{'in Java'}} </span>{{'.'}}</p>
       </div>
       <div style="font-size:16px;margin-top: 22px;text-align: center;">
         {{'I want to'}}
-        <el-input class='noback' size="small"  style="width:13%;margin-left: 10px"
-          placeholder="please input action"
-          v-model="input_action"
-          @blur="dialog"
-          @keyup.enter.native="handleEnter($event)"
-          clearable>
-        </el-input>
+<!--        <el-input class='noback' size="small"  style="width:13%;margin-left: 10px"-->
+<!--          placeholder="please input action"-->
+<!--          v-model="input_action"-->
+<!--          @blur="load"-->
+<!--          @keyup.enter.native="handleEnter($event)"-->
+<!--          clearable>-->
+<!--        </el-input>-->
 <!--        <el-input size="small" style="color:goldenrod;width:13%;margin-left: 14px"-->
 <!--          placeholder="please input object"-->
 <!--          v-model="input_object"-->
@@ -51,17 +51,31 @@
 <!--          @keyup.enter.native="handleEnter($event)"-->
 <!--          clearable>-->
 <!--        </el-input>-->
-        <el-autocomplete
-          size="small"
-          style="color:goldenrod;width:13%;margin-left: 14px"
-          v-model="input_object"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="please input object"
-          @select="handleSelect"
-          @blur="dialog"
-          @keyup.enter.native="handleEnter($event)"
-          clearable
-        ></el-autocomplete>
+            <el-autocomplete
+              style="width:13%;margin-left: 10px"
+              size="small"
+              class="inline-input"
+              v-model="input_action"
+              :fetch-suggestions="querySearch"
+              placeholder="please input action"
+              @select="handleSelect"
+              @blur="load"
+              @keyup.enter.native="handleEnter($event)"
+              clearable
+            ></el-autocomplete>
+            <el-autocomplete
+              style="width:13%;margin-left: 10px"
+              size="small"
+              class="inline-input"
+              v-model="input_object"
+              :fetch-suggestions="querySearch1"
+              placeholder="please input object"
+              @select="handleSelect"
+              @blur="load"
+              @keyup.enter.native="handleEnter($event)"
+              clearable
+            ></el-autocomplete>
+
 
         <el-input size="small" style="width:14%;margin-left: 14px"
                   placeholder="please input constrain"
@@ -116,12 +130,42 @@ export default {
       username:'',
       length1:0,
       item :'',
-      objects:[{ "value": "file", "address": "长宁区新渔路144号" },
-        { "value": "to", "address": "上海市长宁区淞虹路661号" },
-        { "value": "python", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },]
+      objects:[]
     }
   },
   methods: {
+    querySearch(queryString, cb) {
+      var restaurants = this.objects[0];
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+      // var result = results.indexOf('(')
+      // console.log(result)
+    },
+    querySearch1(queryString, cb) {
+      var restaurants = this.objects[1];
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    load(){
+      this.dialog()
+      axios
+        .post(
+          'http://127.0.0.1:5000/taskkg/',{action: 'use',constraint : "", patient : "",username:'x'})
+        .then(response => {
+          console.log(response.data)
+          this.objects=response.data
+        }).catch(error => {
+        console.log(error)
+        console.log('jajajja')
+      })
+    },
     onAdd() {
       this.items.push('')
     },
@@ -219,9 +263,9 @@ export default {
       console.log(item);
     }
   },
-  // mounted:function () {
-  //   this.getJson();
-  // }
+  mounted:function () {
+    this.load();
+  }
 }
 </script>
 
