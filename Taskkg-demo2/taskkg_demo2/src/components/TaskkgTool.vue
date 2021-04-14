@@ -52,58 +52,117 @@
 <!--          clearable>-->
 <!--        </el-input>-->
             <el-autocomplete
-              style="width:13%;margin-left: 10px"
+              style="width:156px;margin-left: 10px"
               size="small"
               class="inline-input"
               v-model="input_action"
               :fetch-suggestions="querySearch"
               placeholder="please input action"
               @select="handleSelect"
-              @blur="load"
-              @keyup.enter.native="handleEnter($event)"
               clearable
             ></el-autocomplete>
             <el-autocomplete
-              style="width:13%;margin-left: 10px"
+              style="width:156px;margin-left: 10px"
               size="small"
               class="inline-input"
               v-model="input_object"
               :fetch-suggestions="querySearch1"
               placeholder="please input object"
               @select="handleSelect"
-              @blur="load"
               @keyup.enter.native="handleEnter($event)"
               clearable
             ></el-autocomplete>
-
-
-        <el-input size="small" style="width:14%;margin-left: 14px"
-                  placeholder="please input constrain"
-                  v-model="input_constraint"
-                  @blur="dialog"
-                  @keyup.enter.native="handleEnter($event)"
-                  clearable>
-        </el-input>
-        <el-input size="small" v-for="(item,i) of items " :key="i" style="width:14%; margin-left: 14px;margin-top: 6px"
-          placeholder="please input constrain"
-          v-model="items[i]"
-          @blur="dialog"
+        <el-autocomplete
+          style="width:142px;margin-left: 10px"
+          size="small"
+          class="inline-input"
+          v-model="input_constraint_adp"
+          :fetch-suggestions="querySearch2"
+          placeholder="please input adp"
+          @select="handleSelect"
+          clearable
+        ></el-autocomplete>
+        <el-autocomplete
+          style="width:180px;margin-left: 10px"
+          size="small"
+          class="inline-input"
+          v-model="input_constraint"
+          :fetch-suggestions="querySearch3"
+          placeholder="please input constraint"
+          @select="handleSelect"
           @keyup.enter.native="handleEnter($event)"
-          clearable>
-        </el-input>
-        <i class="el-icon-circle-plus-outline" @click="onAdd"></i>
+          clearable
+        ></el-autocomplete>
+
+<!--        <el-input size="small" style="width:14%;margin-left: 14px"-->
+<!--                  placeholder="please input constrain"-->
+<!--                  v-model="input_constraint"-->
+<!--                  @blur="dialog"-->
+<!--                  @keyup.enter.native="handleEnter($event)"-->
+<!--                  clearable>-->
+<!--        </el-input>-->
+<!--        <el-input size="small" v-for="(item,i) of items " :key="i" style="width:14%; margin-left: 14px;margin-top: 6px"-->
+<!--          placeholder="please input constrain"-->
+<!--          v-model="items[i]"-->
+<!--          @blur="dialog"-->
+<!--          @keyup.enter.native="handleEnter($event)"-->
+<!--          clearable>-->
+<!--        </el-input>--><i class="el-icon-circle-plus-outline" @click="onAdd"></i>
+        <el-form :model="form">
+          <el-form-item style="margin-top: 2px;margin-bottom: -6px">
+          <el-autocomplete
+            v-for="(item,i) of items " :key="i"
+            style="width:142px;margin-left: 10px"
+            size="small"
+            class="inline-input"
+            v-model="adp_items[i]"
+            :fetch-suggestions="querySearch4"
+            placeholder="please input adp"
+            @select="handleSelect"
+            clearable
+          ></el-autocomplete></el-form-item>
+          <el-form-item>
+          <el-autocomplete
+            v-for="(item,i) of items " :key="i"
+            style="width:180px;margin-left: 10px"
+            size="small"
+            class="inline-input"
+            v-model="items[i]"
+            :fetch-suggestions="querySearch3"
+            placeholder="please input constraint"
+            @select="handleSelect"
+            clearable
+          ></el-autocomplete></el-form-item></el-form>
+
       </div>
-      <div v-if="task" style="margin:20px auto;padding-top:20px;padding-bottom:30px;width: 64%;background:lightgray;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">
-        <div style="margin-top:16px;margin-left: 10px"> {{answers[1].content}} </div>
-      </div>
-      <div style="margin:30px auto;padding-top:20px;padding-bottom:30px;width: 64%;background:lightgray;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">
-        <div style="margin-top:16px;margin-left: 10px" v-for ="item in answers"> {{item.content}} </div>
-      </div>
+<!--      <div v-if="task" style="margin:20px auto;padding-top:20px;padding-bottom:30px;width: 64%;background:lightgray;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">-->
+<!--        <div style="margin-top:16px;margin-left: 10px"> {{answers[1].content}} </div>-->
+<!--      </div>-->
+<!--      <div style="margin:30px auto;padding-top:20px;padding-bottom:30px;width: 68%;background:lightgray;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">-->
+<!--        <div style="margin-top:16px;margin-left: 10px" v-for ="item in answers"> {{item.content}} </div>-->
+        <div v-show="content" style="width: 50%;margin: 20px auto;">
+          <el-table
+            border
+            :data="tableData"
+            stripe
+            style="align-content:center;width: 100%;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">
+            <el-table-column
+              prop="content"
+              label="content"
+              width="270px">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              label="number"
+              >
+            </el-table-column>
+          </el-table>
+      </div></div>
       <div style="margin: 10px auto;text-align: center;">
         <el-button @click="skip" type="info">skip</el-button>
         <el-button @click="quit" type="info">quit</el-button>
      </div>
-    </div>
+<!--    </div>-->
   </div>
 </template>
 
@@ -113,10 +172,14 @@ export default {
   name: "TaskkgTool",
   data(){
     return{
+      tableData:[],
+      content:false,
       items: [],
+      adp_items: [],
       input_action: '',
       input_object:'',
       input_constraint:'',
+      input_constraint_adp:'',
       input_action1: '',
       input_object1:'',
       input_constraint1:'',
@@ -144,9 +207,53 @@ export default {
     },
     querySearch1(queryString, cb) {
       var restaurants = this.objects[1];
+      var concept = this.objects[6]
+      console.log('&&&&')
+      console.log(concept)
+      // if(concept.length==0){
+      //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      //   // 调用 callback 返回建议列表的数据
+      //   cb(results);
+      //   console.log(results)
+      // }else{
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      if (concept.length!=0){
+        for (let i=0;i<concept.length;i++){
+          results.push(concept[i])
+        }
+      }
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      // }
+
+    },
+    querySearch2(queryString, cb) {
+      var restaurants = this.objects[2];
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
+    },
+    querySearch3(queryString, cb) {
+      var restaurants = this.objects[3];
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      // console.log('rrr')
+      // console.log(results)
+      cb(results);
+    },
+    querySearch4(queryString, cb) {
+      var restaurants = this.objects[2];
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    querySearch5(queryString, cb) {
+      var restaurants = this.objects[3];
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+      // console.log('pppp')
+      // console.log(results)
     },
     createFilter(queryString) {
       return (restaurant) => {
@@ -154,13 +261,115 @@ export default {
       };
     },
     load(){
-      this.dialog()
+      // this.dialog()
+      // console.log(this.input_action)
+      // console.log(this.input_object)
+      if (this.input_action){
+        this.content = true
+      }
+      var input_action
+      var input_object
+      var input_constraint
+      console.log(this.items)
+      console.log('==')
+      if (this.input_action == ''){
+        input_action = ''
+      }else{
+        input_action = this.input_action.trim().split(" ");
+        input_action = input_action[0]
+        this.input_action = input_action
+      }
+      if (this.input_object == ''){
+        input_object = ''
+      }else{
+        input_object = this.input_object.trim().split(" ");
+        input_object = input_object[0]
+        this.input_object = input_object
+      }
+      if(this.input_constraint_adp != ''){
+        var a = this.input_constraint_adp.trim().split(" ")
+        console.log(a)
+        this.input_constraint_adp =a[0]
+      }
+      if(this.adp_items.length!=0){
+        let adp_len = this.adp_items.length-1
+        let b =this.adp_items[adp_len].trim().split(" ")
+        this.adp_items[adp_len] = b[0]
+      }
+
+      if (this.input_constraint == ''){
+        input_constraint = []
+      }else if (this.items.length==0){
+        // input_constraint = this.input_constraint.trim().split(" ");
+        var index = this.input_constraint.lastIndexOf(' ')
+        console.log(index)
+        input_constraint = this.input_constraint.substring(0,index)
+        // input_constraint = this.input_constraint_adp+' '+input_constraint
+        // var index1 = this.input_constraint.indexOf(' ')
+        // console.log(index1)
+        // this.input_constraint = input_constraint.substring(index1-1,input_constraint.length)
+        // this.input_constraint = input_constraint.split(this.input_constraint_adp)[1]
+        this.input_constraint = input_constraint
+        console.log(this.input_constraint)
+        console.log("~~")
+        console.log(input_constraint)
+      }else {
+        let len = this.items.length-1
+        let adp_len = this.adp_items.length-1
+        console.log("---")
+        console.log(this.items[len])
+        // var index = this.items[len].lastIndexOf(' ')
+        // console.log(index)
+        // input_constraint = this.items[len].substring(0,index)
+        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
+        // this.items[len] = input_constraint.split(this.adp_items[adp_len])[1]
+
+        // var index1 = this.input_constraint.indexOf(' ')
+        // console.log(index1)
+        // this.input_constraint = input_constraint.substring(index1-1,input_constraint.length)
+
+        // var index = this.items[len].lastIndexOf(' ')
+        // console.log(index)
+        // input_constraint = this.items[len].substring(0,index)
+        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
+        // input_constraint = this.items[len].substring(items[len].lastIndexOf(' ')+1)
+        // this.items[len] = input_constraint.split(this.adp_items[adp_len])[1]
+        var index = this.items[len].lastIndexOf(' ')
+        console.log(index)
+        console.log(this.items[len])
+        input_constraint = this.items[len].substring(0,index)
+        // // this.items[len] = input_constraint
+        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
+        // var a= input_constraint.split(this.adp_items[adp_len])[1]
+        // console.log(a)
+        this.items[len] =input_constraint
+      }
+      // console.log(input_action)
+console.log('ooo')
+      // console.log(input_object)
+      console.log(input_constraint)
+      var concept
+      if (this.input_constraint!=''){
+        concept = this.input_object+ ' '+this.input_constraint
+      }else{
+        concept = this.input_object
+      }
       axios
         .post(
-          'http://127.0.0.1:5000/taskkg/',{action: 'use',constraint : "", patient : "",username:'x'})
+          'http://127.0.0.1:5000/taskkg/',{action: input_action,constraint : input_constraint, patient : input_object,username:"Xu",concept:concept})
         .then(response => {
           console.log(response.data)
           this.objects=response.data
+          this.tableData=[]
+          var keys =Object.keys(response.data[4])
+          console.log(keys)
+          for(let i = 0;i<keys.length;i++){
+            this.tableData.push({
+              "content" : Object.keys(response.data[4])[i],
+              "number" : Object.values(response.data[4])[i]
+            })
+          }
+          console.log(this.tableData)
         }).catch(error => {
         console.log(error)
         console.log('jajajja')
@@ -168,6 +377,7 @@ export default {
     },
     onAdd() {
       this.items.push('')
+      this.adp_items.push('')
     },
     dialog() {
       if(this.input_action !== '' && this.input_action !== this.input_action1){
@@ -260,7 +470,10 @@ export default {
       };
     },
     handleSelect(item) {
-      console.log(item);
+      // console.log(item);
+      // console.log(this.input_object)
+      this.load()
+      // this.dialog()
     }
   },
   mounted:function () {
