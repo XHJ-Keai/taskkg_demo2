@@ -14,19 +14,12 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">cancel</el-button>
-          <el-button type="primary" @click="dialog">submit</el-button>
+          <el-button type="primary" @click="v_show">submit</el-button>
         </div>
       </el-dialog>
     </div>
-<!--    <div v-show="show">-->
-<!--      <a href="http://106.14.239.166:8080/ChatBot/index.html?#/">-->
-<!--        <el-button id="recently_apis" icon="el-icon-s-home" type="primary" style="margin-left:80px;" plain>log in</el-button>-->
-<!--      </a>-->
-<!--    </div>-->
     <div  v-show = "show">
-<!--      <div style="margin-top: -20px;">-->
-<!--        <h2>Taskkg Tool</h2>-->
-<!--      </div>-->
+
       <a href="http://106.14.239.166:8080/ChatBot/index.html?#/">
         <el-button id="recently_apis" icon="el-icon-s-home" type="primary" style="margin-left:60px;" plain>log in</el-button>
       </a>
@@ -36,7 +29,7 @@
         <p style="margin-top: 26px"><b>Example:</b>{{'I want to '}}<span style="background: pink">{{'convert'}}</span>{{' an'}}<span style="margin-left:5px;background: navajowhite">{{' integer' }}</span>{{' to'}}<span style="margin-left:5px;background:skyblue">{{'string'}} </span><span style="margin-left:5px;background:skyblue">{{'in Java'}} </span>{{'.'}}</p>
       </div>
       <div style="font-size:16px;margin-top: 22px;text-align: center;">
-        {{'I want to'}}
+        <b>{{'I want to'}}</b>
 <!--        <el-input class='noback' size="small"  style="width:13%;margin-left: 10px"-->
 <!--          placeholder="please input action"-->
 <!--          v-model="input_action"-->
@@ -52,9 +45,9 @@
 <!--          clearable>-->
 <!--        </el-input>-->
             <el-autocomplete
-              style="width:156px;margin-left: 10px"
+              style="width:156px;margin-left: 10px;font-weight:bold"
               size="small"
-              class="inline-input"
+              class="p"
               v-model="input_action"
               :fetch-suggestions="querySearch"
               placeholder="please input action"
@@ -62,9 +55,9 @@
               clearable
             ></el-autocomplete>
             <el-autocomplete
-              style="width:156px;margin-left: 10px"
+              style="width:auto;margin-left: 10px;font-weight:bold"
               size="small"
-              class="inline-input"
+              class="y"
               v-model="input_object"
               :fetch-suggestions="querySearch1"
               placeholder="please input object"
@@ -73,9 +66,9 @@
               clearable
             ></el-autocomplete>
         <el-autocomplete
-          style="width:142px;margin-left: 10px"
+          style="width:120px;margin-left: 10px"
           size="small"
-          class="inline-input"
+          class="inline-input a"
           v-model="input_constraint_adp"
           :fetch-suggestions="querySearch2"
           placeholder="please input adp"
@@ -83,9 +76,9 @@
           clearable
         ></el-autocomplete>
         <el-autocomplete
-          style="width:180px;margin-left: 10px"
+          style="margin-left: 10px"
           size="small"
-          class="inline-input"
+          class="a"
           v-model="input_constraint"
           :fetch-suggestions="querySearch3"
           placeholder="please input constraint"
@@ -114,7 +107,7 @@
             v-for="(item,i) of items " :key="i"
             style="width:142px;margin-left: 10px"
             size="small"
-            class="inline-input"
+            class="a"
             v-model="adp_items[i]"
             :fetch-suggestions="querySearch4"
             placeholder="please input adp"
@@ -123,10 +116,11 @@
           ></el-autocomplete></el-form-item>
           <el-form-item>
           <el-autocomplete
+            id = "a"
             v-for="(item,i) of items " :key="i"
-            style="width:180px;margin-left: 10px"
+            style="margin-left: 10px"
             size="small"
-            class="inline-input"
+            class="a"
             v-model="items[i]"
             :fetch-suggestions="querySearch3"
             placeholder="please input constraint"
@@ -140,27 +134,28 @@
 <!--      </div>-->
 <!--      <div style="margin:30px auto;padding-top:20px;padding-bottom:30px;width: 68%;background:lightgray;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">-->
 <!--        <div style="margin-top:16px;margin-left: 10px" v-for ="item in answers"> {{item.content}} </div>-->
-        <div v-show="content" style="width: 50%;margin: 20px auto;">
+        <div v-show="this.tableData.length>0" style="width: 50%;margin: 20px auto;">
           <el-table
             border
             :data="tableData"
+            :header-cell-style="{fontSize:'16px'}"
             stripe
             style="align-content:center;width: 100%;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">
             <el-table-column
               prop="content"
-              label="content"
+              label="task"
               width="270px">
             </el-table-column>
             <el-table-column
               prop="number"
-              label="number"
+              label="number of question"
               >
             </el-table-column>
           </el-table>
       </div></div>
       <div style="margin: 10px auto;text-align: center;">
-        <el-button @click="skip" type="info">skip</el-button>
-        <el-button @click="quit" type="info">quit</el-button>
+<!--        <el-button @click="skip" type="info">skip</el-button>-->
+        <el-button @click="quit" type="info">reset</el-button>
      </div>
 <!--    </div>-->
   </div>
@@ -179,7 +174,7 @@ export default {
       input_action: '',
       input_object:'',
       input_constraint:'',
-      input_constraint_adp:'',
+      input_constraint_adp:'in',
       input_action1: '',
       input_object1:'',
       input_constraint1:'',
@@ -193,7 +188,8 @@ export default {
       username:'',
       length1:0,
       item :'',
-      objects:[]
+      objects:[],
+      constraint:[],
     }
   },
   methods: {
@@ -216,8 +212,8 @@ export default {
       //   cb(results);
       //   console.log(results)
       // }else{
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      if (concept.length!=0){
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      if (concept.length!==0){
         for (let i=0;i<concept.length;i++){
           results.push(concept[i])
         }
@@ -235,10 +231,18 @@ export default {
     },
     querySearch3(queryString, cb) {
       var restaurants = this.objects[3];
+      var concept = this.objects[6]
+      console.log('&&&&')
+      console.log(concept)
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       // console.log('rrr')
       // console.log(results)
+      if (concept.length!==0){
+        for (let i=0;i<concept.length;i++){
+          results.push(concept[i])
+        }
+      }
       cb(results);
     },
     querySearch4(queryString, cb) {
@@ -260,18 +264,24 @@ export default {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    first_load(){
+      axios
+        .post(
+          'http://106.14.239.166/TaskKG/taskkg/',{action: '',constraint :this.constraint, patient : '',username:"Xu",concept:''})
+        .then(response => {
+          console.log(response.data)
+          this.objects=response.data
+        console.log(error)
+        console.log('jajajja')
+      })
+    },
     load(){
-      // this.dialog()
-      // console.log(this.input_action)
-      // console.log(this.input_object)
-      if (this.input_action){
-        this.content = true
-      }
       var input_action
       var input_object
-      var input_constraint
+
       console.log(this.items)
       console.log('==')
+
       if (this.input_action == ''){
         input_action = ''
       }else{
@@ -282,72 +292,87 @@ export default {
       if (this.input_object == ''){
         input_object = ''
       }else{
-        input_object = this.input_object.trim().split(" ");
+        // var index1 = this.input_object.lastIndexOf(' ')
+        // console.log(index1)
+        // this.constraint.push(this.input_constraint.substring(0,index))
+        // input_object = this.input_object.substring(0,index1)
+        input_object = this.input_object.trim().split(" (");
+        console.log(input_object)
         input_object = input_object[0]
         this.input_object = input_object
+        console.log(this.input_object)
       }
       if(this.input_constraint_adp != ''){
         var a = this.input_constraint_adp.trim().split(" ")
-        console.log(a)
+
         this.input_constraint_adp =a[0]
       }
       if(this.adp_items.length!=0){
         let adp_len = this.adp_items.length-1
         let b =this.adp_items[adp_len].trim().split(" ")
         this.adp_items[adp_len] = b[0]
+        console.log(this.adp_items)
       }
-
+      let len = this.items.length-1
       if (this.input_constraint == ''){
-        input_constraint = []
+        this.constraint = []
       }else if (this.items.length==0){
         // input_constraint = this.input_constraint.trim().split(" ");
         var index = this.input_constraint.lastIndexOf(' ')
         console.log(index)
-        input_constraint = this.input_constraint.substring(0,index)
+        // this.constraint.push(this.input_constraint.substring(0,index))
+        this.constraint[0]=this.input_constraint.substring(0,index)
         // input_constraint = this.input_constraint_adp+' '+input_constraint
         // var index1 = this.input_constraint.indexOf(' ')
         // console.log(index1)
         // this.input_constraint = input_constraint.substring(index1-1,input_constraint.length)
         // this.input_constraint = input_constraint.split(this.input_constraint_adp)[1]
-        this.input_constraint = input_constraint
+        this.input_constraint = this.constraint[0]
         console.log(this.input_constraint)
         console.log("~~")
-        console.log(input_constraint)
+        console.log(this.constraint)
+      }else if(this.items[len]==''){
+        console.log('***')
+
       }else {
-        let len = this.items.length-1
-        let adp_len = this.adp_items.length-1
+        // let len = this.items.length-1
+
         console.log("---")
         console.log(this.items[len])
         // var index = this.items[len].lastIndexOf(' ')
-        // console.log(index)
-        // input_constraint = this.items[len].substring(0,index)
-        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
-        // this.items[len] = input_constraint.split(this.adp_items[adp_len])[1]
 
-        // var index1 = this.input_constraint.indexOf(' ')
-        // console.log(index1)
-        // this.input_constraint = input_constraint.substring(index1-1,input_constraint.length)
-
-        // var index = this.items[len].lastIndexOf(' ')
         // console.log(index)
-        // input_constraint = this.items[len].substring(0,index)
-        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
-        // input_constraint = this.items[len].substring(items[len].lastIndexOf(' ')+1)
-        // this.items[len] = input_constraint.split(this.adp_items[adp_len])[1]
-        var index = this.items[len].lastIndexOf(' ')
-        console.log(index)
-        console.log(this.items[len])
-        input_constraint = this.items[len].substring(0,index)
-        // // this.items[len] = input_constraint
-        // input_constraint = this.adp_items[adp_len]+' '+input_constraint
-        // var a= input_constraint.split(this.adp_items[adp_len])[1]
-        // console.log(a)
-        this.items[len] =input_constraint
+        // console.log(this.items[len])
+
+        // this.constraint[len+1]=this.items[len].substring(0,index)
+        // let input_constraint_len = this.constraint.length-1
+        // // let input_constraint_len = this.constraint.length-1
+        // console.log(this.constraint)
+        // this.items[len] =this.constraint[input_constraint_len]
+        for(let i=0;i<=len;i++){
+          // this.constraint[i+1] = this.items[i]
+          var index = this.items[i].lastIndexOf(' ')
+          console.log(index)
+          if (index == -1){
+            continue
+          }else{
+            this.items[i]=this.items[i].substring(0,index)
+          }
+        }
+        // this.items[len]=this.items[len].substring(0,index)
+        console.log(this.items)
+        for(let i=0;i<=len;i++){
+          this.constraint[i+1] = this.items[i]
+        }
+        // let input_constraint_len = this.constraint.length-1
+        // // let input_constraint_len = this.constraint.length-1
+        console.log(this.constraint)
+        // this.items[len] =this.constraint[input_constraint_len]
       }
       // console.log(input_action)
 console.log('ooo')
       // console.log(input_object)
-      console.log(input_constraint)
+      console.log(this.constraint)
       var concept
       if (this.input_constraint!=''){
         concept = this.input_object+ ' '+this.input_constraint
@@ -356,7 +381,7 @@ console.log('ooo')
       }
       axios
         .post(
-          'http://127.0.0.1:5000/taskkg/',{action: input_action,constraint : input_constraint, patient : input_object,username:"Xu",concept:concept})
+          'http://106.14.239.166/TaskKG/taskkg/',{action: input_action,constraint :this.constraint, patient : input_object,username:"Xu",concept:concept})
         .then(response => {
           console.log(response.data)
           this.objects=response.data
@@ -374,10 +399,18 @@ console.log('ooo')
         console.log(error)
         console.log('jajajja')
       })
+      // if (this.tableData.length>0){
+      //   this.content = true
+      // }
     },
     onAdd() {
       this.items.push('')
       this.adp_items.push('')
+    },
+    v_show(){
+      this.dialogFormVisible = false
+      this.show = true
+      this.login = false
     },
     dialog() {
       if(this.input_action !== '' && this.input_action !== this.input_action1){
@@ -444,12 +477,14 @@ console.log('ooo')
       this.$message.success('success');
     },
     quit(){
-      this.query='q'
       this.input_action = ''
       this.input_object = ''
       this.input_constraint = ''
-      this.items = ''
-      this.dialog()
+      this.items = []
+      this.adp_items = []
+      // this.content = false
+      this.tableData =[]
+      this.first_load()
     },
     skip(){
       this.query='no'
@@ -477,13 +512,36 @@ console.log('ooo')
     }
   },
   mounted:function () {
-    this.load();
+    this.first_load();
   }
 }
 </script>
 
-<style scoped>
-/*.el-input__inner{*/
-/*  */
-/*}*/
+<style>
+.a .el-input--small .el-input__inner {
+  height: 32px;
+  line-height: 32px;
+  background-color: skyblue;
+  font-weight: bold;
+}
+.p .el-input--small .el-input__inner {
+  height: 32px;
+  line-height: 32px;
+  font-weight: bold;
+  background-color: pink;
+}
+.y .el-input--small .el-input__inner {
+  height: 32px;
+  line-height: 32px;
+  background-color: navajowhite;
+  font-weight: bold;
+}
+.el-input__inner:-ms-input-placeholder {
+  color: #a1a0a0;
+  text-align:center;
+}
+.el-input__inner::placeholder {
+  color: #a1a0a0;
+  text-align:center;
+}
 </style>

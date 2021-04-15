@@ -34,9 +34,9 @@ name: "Test",
 
       var b = this.restaurants;
       var restaurants = this.a[0];
-      console.log(this.a["action"])
-      console.log('====')
-      console.log(b)
+      // console.log(this.a["action"])
+      // console.log('====')
+      // console.log(b)
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
 
@@ -113,6 +113,7 @@ name: "Test",
     },
     handleSelect(item) {
       console.log(item);
+      console.log(this.state1)
     }
   },
   mounted() {

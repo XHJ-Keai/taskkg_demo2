@@ -19,6 +19,7 @@ export default {
   /*text-align: center;*/
   color: #2c3e50;
   margin-top: 60px;
+  font-weight:bold
 }
 /*.el-input__inner {*/
 /*  -webkit-appearance: none;*/
