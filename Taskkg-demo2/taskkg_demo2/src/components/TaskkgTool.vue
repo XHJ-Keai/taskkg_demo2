@@ -20,10 +20,10 @@
     </div>
     <div  v-show = "show">
 
-      <a href="http://106.14.239.166:8080/ChatBot/index.html?#/">
-        <el-button id="recently_apis" icon="el-icon-s-home" type="primary" style="margin-left:60px;" plain>log in</el-button>
-      </a>
-      <div style="font-size:16px;margin-top: 14px;text-align: center;">
+<!--      <a href="http://106.14.239.166:8080/taskkg_demo/index.html?#/">-->
+<!--        <el-button id="recently_apis" icon="el-icon-s-home" type="primary" style="margin-left:60px;" plain>log in</el-button>-->
+<!--      </a>-->
+      <div style="font-size:16px;margin-top: 78px;text-align: center;">
         <p>Tell me what are you trying to do, in the following format:</p>
         <p style="margin-top: -8px">{{'I want to '}}<span style="background: pink"><i>{{'&lt&ltaction>>'}}</i></span><span style="margin-left:5px;background: navajowhite"><i>{{' <&ltobject>>' }}</i></span><span style="margin-left:5px;background:skyblue"><i>{{'<&ltconstraint/context>>.'}}</i></span></p>
         <p style="margin-top: 26px"><b>Example:</b>{{'I want to '}}<span style="background: pink">{{'convert'}}</span>{{' an'}}<span style="margin-left:5px;background: navajowhite">{{' integer' }}</span>{{' to'}}<span style="margin-left:5px;background:skyblue">{{'string'}} </span><span style="margin-left:5px;background:skyblue">{{'in Java'}} </span>{{'.'}}</p>
@@ -60,7 +60,7 @@
               class="y"
               v-model="input_object"
               :fetch-suggestions="querySearch1"
-              placeholder="please input object"
+              placeholder="please input patient"
               @select="handleSelect"
               @keyup.enter.native="handleEnter($event)"
               clearable
@@ -105,7 +105,7 @@
           <el-form-item style="margin-top: 2px;margin-bottom: -6px">
           <el-autocomplete
             v-for="(item,i) of items " :key="i"
-            style="width:142px;margin-left: 10px"
+            style="width:149px;margin-left: 10px"
             size="small"
             class="a"
             v-model="adp_items[i]"
@@ -335,20 +335,16 @@ export default {
         console.log('***')
 
       }else {
-        // let len = this.items.length-1
-
         console.log("---")
         console.log(this.items[len])
-        // var index = this.items[len].lastIndexOf(' ')
+        console.log(this.input_constraint)
 
-        // console.log(index)
-        // console.log(this.items[len])
-
-        // this.constraint[len+1]=this.items[len].substring(0,index)
-        // let input_constraint_len = this.constraint.length-1
-        // // let input_constraint_len = this.constraint.length-1
-        // console.log(this.constraint)
-        // this.items[len] =this.constraint[input_constraint_len]
+        var index2 = this.input_constraint.lastIndexOf(' ')
+        console.log(index2)
+        if (index2!=-1){
+          this.constraint[0]=this.input_constraint.substring(0,index2)
+          this.input_constraint = this.constraint[0]
+        }
         for(let i=0;i<=len;i++){
           // this.constraint[i+1] = this.items[i]
           var index = this.items[i].lastIndexOf(' ')
