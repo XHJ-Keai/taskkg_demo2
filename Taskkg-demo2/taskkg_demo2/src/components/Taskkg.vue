@@ -108,7 +108,7 @@
 
         <div style="float:right;margin:30px auto;padding-top:20px;padding-bottom:30px;width: 30%;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);border-radius: 10px;">
         <div v-show="suggestion_action.length>0" style="margin-top: 10px;margin-left: 6px">
-          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended actions:</p>
+          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Missing Suggestions for Action:</p>
           <el-tag
               v-for="tag in suggestion_action"
               style="margin-left: 4px;margin-bottom: 2px"
@@ -121,7 +121,7 @@
             </el-tag>
         </div>
         <div v-show="re_action.length>0" style="margin-top: 10px;margin-left: 6px">
-          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended refine actions:</p>
+          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Refinement Suggestions for Action:</p>
           <el-tag
             style="margin-left: 4px;margin-bottom: 2px"
             v-for="tag in re_action"
@@ -134,7 +134,7 @@
           </el-tag>
         </div>
           <div v-show="suggestion_object.length>0" style="margin-top: 10px;margin-left: 6px">
-            <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended objects:</p>
+            <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Missing Suggestions for Object:</p>
             <el-tag
               v-for="tag in suggestion_object"
               style="margin-left: 4px;margin-bottom: 2px;"
@@ -147,7 +147,7 @@
             </el-tag>
           </div>
           <div v-show="refine_object.length>0" style="margin-top: 10px;margin-left: 6px">
-            <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended refine objects:</p>
+            <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Refinement Suggestions for Object:</p>
             <el-tag
               v-for="tag in refine_object"
               style="margin-left: 4px;margin-bottom: 2px;"
@@ -159,8 +159,20 @@
               {{tag.value}}
             </el-tag>
           </div>
+          <div v-show="refine_constraint.length>0" style="margin-top: 10px;margin-left: 6px">
+          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Refinement Suggestions for Constraint:</p>
+          <el-tag
+            style="margin-left: 4px;margin-bottom: 2px"
+            v-for="tag in refine_constraint"
+            :key="tag.value"
+            size="small"
+            @click="re_constraint_tag(tag)"
+          >
+            {{tag.value}}
+          </el-tag>
+        </div>
         <div v-show="suggestion_constraint.length>0" style="margin-top: 10px;margin-left: 6px">
-          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended missing constants:</p>
+          <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Missing Suggestions for Constraint:</p>
           <el-tag
             style="margin-left: 4px;margin-bottom: 2px"
             v-for="tag in suggestion_constraint"
@@ -171,18 +183,7 @@
             {{tag.value}}
           </el-tag>
         </div>
-          <div v-show="refine_constraint.length>0" style="margin-top: 10px;margin-left: 6px">
-            <p style="margin-bottom: 1px;margin-left: 4px;color: #747474">Recommended refine constants:</p>
-            <el-tag
-              style="margin-left: 4px;margin-bottom: 2px"
-              v-for="tag in refine_constraint"
-              :key="tag.value"
-              size="small"
-              @click="re_constraint_tag(tag)"
-            >
-              {{tag.value}}
-            </el-tag>
-          </div>
+
       </div>
     </div>
   </template>
@@ -350,9 +351,11 @@ name: "taskkg",
       },
       querySearch5(queryString, cb) {
         var restaurants = this.objects[3];
-        var concept = this.re_constraint1
+        // var concept = this.re_constraint1
 
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        var concept = queryString ? this.re_constraint1.filter(this.createFilter(queryString)) : this.re_constraint1;
+        console.log(concept)
         // 调用 callback 返回建议列表的数据
         if (concept.length!==0){
           for (let i=0;i<concept.length;i++){
@@ -409,7 +412,10 @@ name: "taskkg",
               this.re_constraint = response.data[6]
               console.log(this.re_constraint)
             }else{
-              this.re_constraint1= response.data[6]
+              for (let i=0;i<response.data[6].length;i++){
+                this.re_constraint1.push(response.data[6][i])
+              }
+
               console.log(this.re_constraint1)
             }
 
@@ -489,7 +495,25 @@ name: "taskkg",
               this.suggestion_object = response.data[1]
             }
             if (this.input_object!==''&&this.input_constraint===''){
-              this.re_action=response.data[4]
+              console.log(response.data[4])
+              let k
+              for(k=0;k<response.data[4].length;k++){
+                console.log(this.input_action)
+                console.log(response.data[4][k])
+                if(this.input_action===response.data[4][k].value){
+                  console.log('oooosasd')
+                  break
+                }
+              }
+              console.log(k)
+              if (k===1){
+                this.re_action=[]
+              }else{
+                for (let i=0;i<k;i++){
+                  this.re_action.push(response.data[4][i])
+                  console.log(i)
+                }
+              }
             }
             if (concept===this.input_object){
               this.refine_object =response.data[3]
@@ -536,7 +560,7 @@ name: "taskkg",
         for (let j=0;j<=responseData[2].length;j++){
           let use_constraint
           use_constraint = responseData[2][j].value
-          console.log(use_constraint)
+          // console.log(use_constraint)
           axios
             .post(
               'http://127.0.0.1:5000/task_kg_adp/',{concept:use_constraint})
@@ -544,7 +568,7 @@ name: "taskkg",
               this.suggestion_constraint.push(
                 {'value':response.data[0]+' '+use_constraint}
               )
-              console.log(this.suggestion_constraint)
+              // console.log(this.suggestion_constraint)
             }).catch(error => {
             console.log(error)
             console.log('ffffff')
@@ -617,12 +641,20 @@ name: "taskkg",
       },
       confirm(){
         if (this.items.length!==0){
+          var re=this.input_action+' '+this.input_object+' '+this.input_constraint_adp+' '+this.input_constraint
           for (let i=0;i<this.items.length;i++){
-            var re='I want to '+this.input_action+' '+this.input_object+' '+this.input_constraint_adp+' '+this.input_constraint
-            this.result =re+' '+this.adp_items[i]+' '+this.items[i]
+            console.log(this.result)
+            console.log(i)
+            if (i===0){
+              this.result=re+' '+this.adp_items[i]+' '+this.items[i]
+            }else{
+              console.log(this.result)
+              this.result =this.result+' '+this.adp_items[i]+' '+this.items[i]
+              console.log(this.result)
+            }
           }
         }else{
-          this.result='I want to '+this.input_action+' '+this.input_object+' '+this.input_constraint_adp+' '+this.input_constraint
+          this.result=this.input_action+' '+this.input_object+' '+this.input_constraint_adp+' '+this.input_constraint
         }
         this.final_task=true
       }
