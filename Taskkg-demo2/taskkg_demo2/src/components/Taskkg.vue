@@ -35,6 +35,7 @@
               :fetch-suggestions="querySearch"
               placeholder="please input action"
               @select="handleSelect"
+              @clear="handleSelect"
               clearable
             ></el-autocomplete>
             <el-autocomplete
@@ -46,6 +47,7 @@
               placeholder="please input object"
               @select="handleSelect"
               @keyup.enter.native="handleEnter($event)"
+              @clear="handleSelect"
               clearable
             ></el-autocomplete>
             <el-autocomplete
@@ -66,6 +68,7 @@
               placeholder="please input constraint"
               @select="handleSelect"
               @keyup.enter.native="handleEnter($event)"
+              @clear="handleSelect"
               clearable
             ></el-autocomplete>
             <i class="el-icon-circle-plus-outline" @click="onAdd"></i>
@@ -92,6 +95,7 @@
                   :fetch-suggestions="querySearch5"
                   placeholder="please input constraint"
                   @select="handleSelect"
+                  @clear="handleSelect"
                   clearable
                 ></el-autocomplete></el-form-item></el-form>
             <div style="margin: 10px auto;text-align: center;">
