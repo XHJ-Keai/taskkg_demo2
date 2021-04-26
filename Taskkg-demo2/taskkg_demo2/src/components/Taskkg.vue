@@ -1,21 +1,5 @@
 <template>
     <div>
-
-        <div v-show="login" style="margin: 40px auto;width: 20%;height: 100px">
-          <!--        <el-button type="primary" plain style="position: absolute;margin: 30px 10px" @click="dialogFormVisible = true">主要按钮</el-button>-->
-          <el-button type="primary" plain style="margin:100px auto;width: 20%;height: 100px;position: absolute;" @click="dialogFormVisible = true">Click to enter the username</el-button>
-          <el-dialog title="Information" :visible.sync="dialogFormVisible">
-            <el-form :model="username">
-              <el-form-item label="Username:" :label-width="formLabelWidth">
-                <el-input v-model="username" autocomplete="off"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">cancel</el-button>
-              <el-button type="primary" @click="v_show">submit</el-button>
-            </div>
-          </el-dialog>
-        </div>
         <div v-show = "show" style="float:left;width: 70%">
           <div style="margin: -26px auto;">
             <h2 style="text-align: center">Taskkg Tool</h2>
@@ -35,6 +19,8 @@
               :fetch-suggestions="querySearch"
               placeholder="please input action"
               @select="handleSelect"
+              @blur="handleSelect"
+              @keyup.enter.native="handleEnter($event)"
               @clear="handleSelect"
               clearable
             ></el-autocomplete>
@@ -46,6 +32,7 @@
               :fetch-suggestions="querySearch1"
               placeholder="please input object"
               @select="handleSelect"
+              @blur="handleSelect"
               @keyup.enter.native="handleEnter($event)"
               @clear="handleSelect"
               clearable
@@ -67,6 +54,7 @@
               :fetch-suggestions="querySearch3"
               placeholder="please input constraint"
               @select="handleSelect"
+              @blur="handleSelect"
               @keyup.enter.native="handleEnter($event)"
               @clear="handleSelect"
               clearable
@@ -95,6 +83,8 @@
                   :fetch-suggestions="querySearch5"
                   placeholder="please input constraint"
                   @select="handleSelect"
+                  @blur="handleSelect"
+                  @keyup.enter.native="handleEnter($event)"
                   @clear="handleSelect"
                   clearable
                 ></el-autocomplete></el-form-item></el-form>
@@ -213,7 +203,7 @@ name: "taskkg",
         input_constraint1:'',
         answers:[],
         query:'',
-        show:false,
+        show:true,
         login:true,
         task:false,
         dialogTableVisible: false,
@@ -233,6 +223,7 @@ name: "taskkg",
         refine_constraint:[],
         re_action:[],
         suggestion_object:[],
+        adp:[],
       }
     },
     methods: {
@@ -265,12 +256,14 @@ name: "taskkg",
       action_tag(tag){
         console.log(tag)
         this.input_action=tag.value
+        this.get_action()
         this.dialog()
         this.load()
       },
       object_tag(tag){
         console.log(tag)
         this.input_object=tag.value
+        this.get_action()
         this.dialog()
         this.load()
       },
@@ -282,10 +275,12 @@ name: "taskkg",
           this.input_constraint=modify_constraint[1]
           this.input_constraint_adp = modify_constraint[0]
         }else {
+          this.onAdd()
           let len =this.items.length-1
           this.items[len]=modify_constraint[1]
           this.adp_items[len]=modify_constraint[0]
         }
+        this.get_action()
         this.dialog()
         this.load()
       },
@@ -326,13 +321,13 @@ name: "taskkg",
 
       },
       querySearch2(queryString, cb) {
-        var restaurants = this.objects[2];
+        var restaurants = this.adp;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
         // 调用 callback 返回建议列表的数据
         cb(results);
       },
       querySearch3(queryString, cb) {
-        var restaurants = this.objects[3];
+        var restaurants = this.objects[2];
         var concept = this.re_constraint
         console.log('&&&&')
         console.log(concept)
@@ -348,13 +343,13 @@ name: "taskkg",
         cb(results);
       },
       querySearch4(queryString, cb) {
-        var restaurants = this.objects[2];
+        var restaurants = this.adp;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
         // 调用 callback 返回建议列表的数据
         cb(results);
       },
       querySearch5(queryString, cb) {
-        var restaurants = this.objects[3];
+        var restaurants = this.objects[2];
         // var concept = this.re_constraint1
 
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
@@ -378,12 +373,17 @@ name: "taskkg",
       first_load(){
         axios
           .post(
-            'http://106.14.239.166/TaskKG/taskkg2/',{action: '',constraint :this.constraint, patient : '',username:"Xu",concept:''})
+            'http://106.14.239.166/TaskKG/taskkg2/',{action: '',constraint :this.constraint, patient : '',concept:''})
           .then(response => {
             console.log(response.data)
             this.objects=response.data
-            console.log(error)
-            console.log('jajajja')
+          })
+        axios
+          .get(
+            'http://106.14.239.166/TaskKG/get_adp/')
+          .then(response => {
+            console.log(response.data)
+            this.adp=response.data
           })
       },
       load(){
@@ -403,32 +403,23 @@ name: "taskkg",
         }
         axios
           .post(
-            'http://127.0.0.1:5000/taskkg2/',{action: this.input_action,constraint :this.constraint, patient : this.input_object,username:"Xu",concept:concept})
+            'http://106.14.239.166/TaskKG/taskkg2/',{action: this.input_action,constraint :this.constraint, patient : this.input_object,username:"Xu",concept:concept})
           .then(response => {
             console.log(response.data)
             this.objects=response.data
-            this.tableData=[]
-            var keys =Object.keys(response.data[4])
-            console.log(keys)
             if (concept === this.input_object){
-              this.re_object = response.data[6]
+              this.re_object = response.data[4]
             }else if (concept===this.input_constraint){
-              this.re_constraint = response.data[6]
+              this.re_constraint = response.data[4]
               console.log(this.re_constraint)
             }else{
-              for (let i=0;i<response.data[6].length;i++){
-                this.re_constraint1.push(response.data[6][i])
+              for (let i=0;i<response.data[4].length;i++){
+                this.re_constraint1.push(response.data[4][i])
               }
 
               console.log(this.re_constraint1)
             }
 
-            for(let i = 0;i<keys.length;i++){
-              this.tableData.push({
-                "content" : Object.keys(response.data[4])[i],
-                "number" : Object.values(response.data[4])[i]
-              })
-            }
             console.log(this.tableData)
           }).catch(error => {
           console.log(error)
@@ -447,12 +438,54 @@ name: "taskkg",
         this.show = true
         this.login = false
       },
+      get_action(){
+        this.suggestion_action=[]
+        this.re_action=[]
+        axios
+          .post(
+            'http://106.14.239.166/TaskKG/taskkg_action/',{patient : this.input_object,})
+          .then(response => {
+            console.log("---")
+            if (this.input_action===''){
+              this.suggestion_action=response.data[0]
+              console.log(response.data[0])
+            }else if(this.input_action!==''&&this.input_object===''){
+              this.re_action=[]
+              console.log("odefp")
+            }else if(this.input_constraint!==''){
+              console.log(this.input_constraint)
+              console.log("opopop")
+              this.re_action=[]
+            }else{
+              console.log(this.input_constraint)
+              // this.suggestion_action=response.data[1]
+              let k
+              for(k=0;k<response.data[1].length;k++){
+                console.log(this.input_action)
+                console.log(response.data[1][k])
+                if(this.input_action===response.data[1][k].value){
+                  console.log('oooosasd')
+                  break
+                }
+              }
+              console.log(k)
+              if (k===1){
+                this.re_action=[]
+              }else{
+                for (let i=0;i<k;i++){
+                  this.re_action.push(response.data[1][i])
+                  console.log(i)
+                }
+              }
+            }
+          })
+      },
       dialog() {
+        this.suggestion_action=[]
         this.refine_constraint=[]
         this.refine_object=[]
         this.suggestion_constraint=[]
         this.suggestion_object=[]
-        this.suggestion_action=[]
         var concept
         if (this.input_constraint===''){
           concept = this.input_object
@@ -483,70 +516,28 @@ name: "taskkg",
         console.log(this.items.length)
         this.dialogFormVisible = false
         this.show = true
-        this.login = false
-        this.suggestion_action=[]
-        this.re_action=[]
         axios
           .post(
-            'http://127.0.0.1:5000/task_kg/',{action: this.input_action,constraint :this.constraint, patient : this.input_object,username:"Xu",concept:concept})
+            'http://106.14.239.166/TaskKG/task_kg/',{action: this.input_action,constraint :this.constraint, patient : this.input_object,concept:concept})
           .then(response => {
-            if (this.input_action===''){
-              this.suggestion_action=response.data[0]
-            }
             if (this.input_object===''&&this.input_action!==''){
-              this.suggestion_object = response.data[1]
+              this.suggestion_object = response.data[0]
             }else if(this.input_object1 !== this.input_object){
-              this.suggestion_object = response.data[1]
+              this.suggestion_object = response.data[0]
             }
             if (this.input_object!==''&&this.input_constraint===''){
-              console.log(response.data[4])
-              let k
-              for(k=0;k<response.data[4].length;k++){
-                console.log(this.input_action)
-                console.log(response.data[4][k])
-                if(this.input_action===response.data[4][k].value){
-                  console.log('oooosasd')
-                  break
-                }
-              }
-              console.log(k)
-              if (k===1){
-                this.re_action=[]
-              }else{
-                for (let i=0;i<k;i++){
-                  this.re_action.push(response.data[4][i])
-                  console.log(i)
-                }
-              }
+              this.get_action()
             }
             if (concept===this.input_object){
-              this.refine_object =response.data[3]
+              this.refine_object =response.data[2]
             }else{
-              this.refine_constraint = response.data[3]
+              this.refine_constraint = response.data[2]
             }
             if (this.input_object ===''){
               this.suggestion_constraint = []
             }else{
               this.dealt_response_data(response.data)
           }
-
-            // if(this.input_object==''){
-            //   this.answers=response.data[1]
-            //   this.suggestion_constraint=response.data[2]
-            // }else{
-            //   this.answers=response.data[3]
-            //   this.suggestion_constraint=response.data[3]
-            //   console.log(response.data)
-            //   console.log(response.data[3])
-            //   for (let i=0;i<response.data[1].length;i++){
-            //     this.answers.push(response.data[1][i])
-            //   }
-            //   for (let i=0;i<response.data[2].length;i++){
-            //     this.suggestion_constraint.push(response.data[2][i])
-            //   }
-            //   console.log('===')
-            // }
-            // console.log(this.answers)
           }).catch(error => {
           console.log(error)
           console.log('jajajja')
@@ -561,13 +552,13 @@ name: "taskkg",
       },
       dealt_response_data(responseData) {
 
-        for (let j=0;j<=responseData[2].length;j++){
+        for (let j=0;j<=responseData[1].length;j++){
           let use_constraint
-          use_constraint = responseData[2][j].value
+          use_constraint = responseData[1][j].value
           // console.log(use_constraint)
           axios
             .post(
-              'http://127.0.0.1:5000/task_kg_adp/',{concept:use_constraint})
+              'http://106.14.239.166/TaskKG/task_kg_adp/',{concept:use_constraint})
             .then(response => {
               this.suggestion_constraint.push(
                 {'value':response.data[0]+' '+use_constraint}
@@ -581,8 +572,8 @@ name: "taskkg",
       },
       handleEnter(event){
         event.target.blur();
-        // this.dialog()
         this.$message.success('success');
+        this.handleSelect()
       },
       quit(){
         this.suggestion_constraint =[]
@@ -639,6 +630,7 @@ name: "taskkg",
           console.log(this.constraint)
 
         }
+        this.get_action()
         this.dialog()
         this.load()
 
@@ -665,7 +657,7 @@ name: "taskkg",
     },
     mounted:function () {
       this.first_load();
-      this.dialog()
+      this.get_action()
     }
     }
 </script>

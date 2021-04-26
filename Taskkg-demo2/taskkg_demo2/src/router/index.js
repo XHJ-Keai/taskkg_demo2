@@ -5,6 +5,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import HelloWorld from '@/components/HelloWorld'
 import TaskkgTool from '@/components/TaskkgTool'
 import Test from '@/components/Test'
+import Taskkg from '@/components/Taskkg'
 
 
 
@@ -27,6 +28,11 @@ export default new Router({
       path: '/Test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: '/Taskkg',
+      name: 'Taskkg',
+      component: Taskkg
     }
 
   ]

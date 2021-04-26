@@ -122,7 +122,7 @@
             size="small"
             class="a"
             v-model="items[i]"
-            :fetch-suggestions="querySearch3"
+            :fetch-suggestions="querySearch5"
             placeholder="please input constraint"
             @select="handleSelect"
             clearable
