@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    #rasaWebchatPro {
+      /*box-sizing: border-box;*/
+      width: 100%;
+      height: 580px;
+      position: relative;
+      /*left: 0;*/
+      /*right: 0;*/
+      /*margin: 0;*/
+      /*z-index: 1;*/
+      /*display: flex;*/
+      /*flex-direction: column;*/
+    }
+    html {
+      /*height: 100%;*/
+      /*display: table;*/
+    }
+
+    body {
+      /*display: table-cell;*/
+      height: 580px;
+    }
+  </style>
+    <meta charset="UTF-8">
+    <title>Programming Bot</title>
+  <script type="text/javascript" src="https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/jquery/jquery-1.10.2.min_65682a2.js"></script>
+</head>
+<body>
+<!--  <input type="button" value="计算" onclick="a()"></input>-->
+  <script type="text/javascript">
+    !(function () {
+      let e = document.createElement("script"),
+        t = document.head || document.getElementsByTagName("head")[0];
+      (e.src =
+        "http://47.116.194.87:8080/Cerebro/static/index.js"),
+        (e.async = !0),
+        (e.onload = () => {
+          window.WebChat.default(
+            {
+              selector: "#webchat",
+              initPayload: "/start",
+              customData: {"language": "en"}, // arbitrary custom data. Stay minimal as this will be added to the socket
+              socketUrl: "http://10.176.34.89:9780",
+              socketPath: "/socket.io",
+              title: "Programming Bot",
+              // subtitle: "Subtitle",
+              showMessageDate: true,
+              showFullScreenButton: true,
+              inputTextFieldHint:"Welcome to chat with me~ Please input your question.",
+              embedded: true,
+              params: {"storage": "session"},
+            },
+          );
+        }),
+        t.insertBefore(e, t.firstChild);
+
+  })();
+    $(window).bind("load", function () {
+      $(document).ready(function(){
+        $(".rw-new-message").html("testtest");
+        console.log($(".rw-new-message").html());
+
+      });
+    //    $(function () {
+    //     console.log("hello");
+    //     console.log($(".rw-new-message").val());
+    //     console.log($(".rw-new-message").attr('placeholder','input'))
+    //     $(".rw-new-message").val("jjjjj");
+    //     console.log($(".rw-new-message").val());
+    //   });
+    });
+    // var val = document.getElementsByClassName("rw-new-message");
+    // console.log(val)
+
+    //   function add()
+    // {
+    //   console.log(document.getElementsByClassName("rw-new-message").accessKey)
+    //   document.getElementsByClassName("rw-new-message").value ="aaa";
+    //   document.getElementsByClassName("rw-new-message").text = "aaa";
+    //   document.getElementsByClassName("rw-new-message").innerHTML = "aaa";
+    //
+    // }
+    // // window.onload=add()
+    // console.log(document.getElementsByClassName("rw-new-message").innerHTML)
+    // function a() {
+    //   console.log(document.getElementsByClassName("rw-new-message"))
+    // }
+    //   // var content2 = document.getElementsByClassName("rw-new-message").value;
+    //   // console.log(content2)
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    #rasaWebchatPro {
+      /*box-sizing: border-box;*/
+      width: 100%;
+      height: 580px;
+      position: relative;
+      /*left: 0;*/
+      /*right: 0;*/
+      /*margin: 0;*/
+      /*z-index: 1;*/
+      /*display: flex;*/
+      /*flex-direction: column;*/
+    }
+    html {
+      /*height: 100%;*/
+      /*display: table;*/
+    }
+
+    body {
+      /*display: table-cell;*/
+      height: 580px;
+    }
+  </style>
+  <meta charset="UTF-8">
+  <title>Programming Bot</title>
+</head>
+<body>
+<!--  <input type="button" value="计算" onclick="a()"></input>-->
+<script>
+  !(function () {
+    let e = document.createElement("script"),
+      t = document.head || document.getElementsByTagName("head")[0];
+    (e.src =
+      "http://47.116.194.87:8080/Cerebro/static/index.js"),
+      (e.async = !0),
+      (e.onload = () => {
+        window.WebChat.default(
+          {
+            selector: "#webchat",
+            initPayload: "/start",
+            customData: {"language": "en"}, // arbitrary custom data. Stay minimal as this will be added to the socket
+            socketUrl: "http://47.116.194.87:9780",
+            socketPath: "/socket.io",
+            title: "Programming Bot",
+            // subtitle: "Subtitle",
+            showMessageDate: true,
+            showFullScreenButton: true,
+            inputTextFieldHint:"Welcome to chat with me~ Please input your question.",
+            embedded: true,
+            params: {"storage": "session"},
+          },
+        );
+      }),
+      t.insertBefore(e, t.firstChild);
+
+  })();
+</script>
+
+</body>
+</html>
+
